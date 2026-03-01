@@ -1,0 +1,40 @@
+{
+  "GOST Table of Contents": {
+    "prefix": "gtoc",
+    "body": ["[TOC]", ""],
+    "description": "Insert GOST-style table of contents"
+  },
+  "GOST Image with Caption": {
+    "prefix": "gimg",
+    "body": [
+      "![${1:Caption}](${2:images/}${3:image.png} \"%${4:ref_name} ${5:Caption}\")",
+      ""
+    ],
+    "description": "Insert image with GOST caption and reference name"
+  },
+  "GOST Code Listing": {
+    "prefix": "gcode",
+    "body": [
+      "```${1:python} ${2:path/to/file.py}",
+      "${3:# code here}",
+      "```",
+      ""
+    ],
+    "description": "Insert code listing with file path for GOST formatting"
+  },
+  "GOST Reference": {
+    "prefix": "gref",
+    "body": ["(рис. %${1:ref_name})"],
+    "description": "Insert reference to a figure or table"
+  },
+  "GOST Inline Formula": {
+    "prefix": "gformula",
+    "body": ["$$${1:E = mc^2}$$", ""],
+    "description": "Insert inline formula in LaTeX notation"
+  },
+  "GOST Page Break": {
+    "prefix": "gpagebreak",
+    "body": ["---", ""],
+    "description": "Insert page break"
+  }
+}

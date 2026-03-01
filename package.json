@@ -1,0 +1,130 @@
+{
+  "name": "gostforge",
+  "displayName": "GostForge",
+  "description": "Конвертация Markdown в DOCX/PDF по ГОСТ с помощью GostForge",
+  "version": "0.1.0",
+  "publisher": "gostforge",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gostforge/gostforge"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other",
+    "Formatters"
+  ],
+  "activationEvents": [
+    "workspaceContains:**/gostforge.yml"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "gostforge.setToken",
+        "title": "GostForge: Установить API токен",
+        "icon": "$(key)"
+      },
+      {
+        "command": "gostforge.setEndpoint",
+        "title": "GostForge: Адрес сервера",
+        "icon": "$(globe)"
+      },
+      {
+        "command": "gostforge.convertDocx",
+        "title": "GostForge: Конвертировать в DOCX",
+        "icon": "$(file-text)"
+      },
+      {
+        "command": "gostforge.convertPdf",
+        "title": "GostForge: Конвертировать в PDF",
+        "icon": "$(file-pdf)"
+      },
+      {
+        "command": "gostforge.convertBoth",
+        "title": "GostForge: Конвертировать в DOCX + PDF",
+        "icon": "$(files)"
+      },
+      {
+        "command": "gostforge.history",
+        "title": "GostForge: История конвертаций",
+        "icon": "$(history)"
+      }
+    ],
+    "configuration": {
+      "title": "GostForge",
+      "properties": {
+        "gostforge.serverUrl": {
+          "type": "string",
+          "default": "http://localhost:8080",
+          "description": "URL сервера GostForge"
+        },
+        "gostforge.outputFormat": {
+          "type": "string",
+          "enum": [
+            "DOCX",
+            "PDF",
+            "BOTH"
+          ],
+          "default": "DOCX",
+          "description": "Формат конвертации по умолчанию"
+        },
+        "gostforge.exclude": {
+          "type": "array",
+          "default": [
+            "node_modules/**",
+            ".git/**",
+            "out/**"
+          ],
+          "description": "Glob-паттерны для исключения из загрузки"
+        }
+      }
+    },
+    "snippets": [
+      {
+        "language": "markdown",
+        "path": "./src/snippets/gost-markdown.json"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "gostforge",
+          "title": "GostForge",
+          "icon": "$(file-text)"
+        }
+      ]
+    },
+    "views": {
+      "gostforge": [
+        {
+          "type": "webview",
+          "id": "gostforge.panel",
+          "name": "Панель управления"
+        },
+        {
+          "id": "gostforge.history",
+          "name": "История конвертаций"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.7.1",
+    "typescript": "^5.3.0"
+  },
+  "dependencies": {
+    "form-data": "^4.0.0",
+    "node-fetch": "^2.7.0"
+  }
+}
