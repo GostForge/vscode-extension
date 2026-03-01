@@ -93,6 +93,36 @@ export class ApiClient {
     });
   }
 
+  // ── JSON helper ──
+
+  /**
+   * Parse response body as JSON.
+   * If the server returns HTML (e.g. a proxy error page or wrong port),
+   * throws a clear error instead of the confusing "Unexpected token '<'" message.
+   */
+  private parseJson<T>(
+    res: { status: number; headers: http.IncomingHttpHeaders; body: Buffer }
+  ): T {
+    const ct = res.headers["content-type"] ?? "";
+    const text = res.body.toString();
+    if (!ct.includes("application/json") && (text.trimStart().startsWith("<") || text.trimStart().startsWith("<!DOCTYPE"))) {
+      const serverUrl = this.getServerUrl();
+      throw new Error(
+        `Сервер вернул HTML вместо JSON (статус ${res.status}). ` +
+        `Проверьте настройку «GostForge: Server URL» — ` +
+        `сейчас: ${serverUrl}. ` +
+        `Backend должен быть доступен на порту 8080.`
+      );
+    }
+    try {
+      return JSON.parse(text) as T;
+    } catch {
+      throw new Error(
+        `Сервер вернул некорректный JSON (статус ${res.status}): ${text.slice(0, 120)}`
+      );
+    }
+  }
+
   // ── API calls ──
 
   /**
@@ -108,10 +138,10 @@ export class ApiClient {
     }, payload);
 
     if (res.status !== 200) {
-      const err = JSON.parse(res.body.toString());
+      const err = this.parseJson<{ message?: string; error?: string }>(res);
       throw new Error(`check-hashes failed (${res.status}): ${err.message ?? err.error}`);
     }
-    return JSON.parse(res.body.toString());
+    return this.parseJson<CheckHashesResponse>(res);
   }
 
   /**
@@ -166,7 +196,7 @@ export class ApiClient {
 
     if (res.status === 409) {
       // STALE_CACHE or ACTIVE_JOB
-      const err = JSON.parse(res.body.toString());
+      const err = this.parseJson<{ status?: string; errorMessage?: string; message?: string; error?: string }>(res);
       if (err.status === "STALE_CACHE") {
         const staleError = new Error("STALE_CACHE") as Error & { missingPaths: string[] };
         staleError.missingPaths = (err.errorMessage ?? "").split(",");
@@ -176,10 +206,10 @@ export class ApiClient {
     }
 
     if (res.status !== 202) {
-      const err = JSON.parse(res.body.toString());
+      const err = this.parseJson<{ message?: string; error?: string }>(res);
       throw new Error(`Submit failed (${res.status}): ${err.message ?? err.error}`);
     }
-    return JSON.parse(res.body.toString());
+    return this.parseJson<JobStatusResponse>(res);
   }
 
   /**
@@ -191,10 +221,10 @@ export class ApiClient {
     const res = await this.request("GET", url, auth);
 
     if (res.status !== 200) {
-      const err = JSON.parse(res.body.toString());
+      const err = this.parseJson<{ message?: string; error?: string }>(res);
       throw new Error(`Status failed (${res.status}): ${err.message ?? err.error}`);
     }
-    return JSON.parse(res.body.toString());
+    return this.parseJson<JobStatusResponse>(res);
   }
 
   /**
