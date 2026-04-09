@@ -126,10 +126,10 @@ export class ApiClient {
   // ── API calls ──
 
   /**
-   * POST /api/v1/convert/quick/check-hashes
+   * POST /api/v1/conversions/check-hashes
    */
   async checkHashes(manifest: Manifest): Promise<CheckHashesResponse> {
-    const url = `${this.getServerUrl()}/api/v1/convert/quick/check-hashes`;
+    const url = `${this.getServerUrl()}/api/v1/conversions/check-hashes`;
     const auth = await this.authHeaders();
     const payload = JSON.stringify({ hashes: manifest });
     const res = await this.request("POST", url, {
@@ -145,14 +145,14 @@ export class ApiClient {
   }
 
   /**
-   * POST /api/v1/convert/quick — multipart/form-data with files[] + manifest + options
+   * POST /api/v1/conversions — multipart/form-data with files[] + manifest + options
    */
   async submitJob(
     manifest: Manifest,
     missingFiles: FileEntry[],
     outputFormat: string
   ): Promise<JobStatusResponse> {
-    const url = `${this.getServerUrl()}/api/v1/convert/quick`;
+    const url = `${this.getServerUrl()}/api/v1/conversions`;
     const auth = await this.authHeaders();
     const boundary = `----GostForge${Date.now()}`;
 
@@ -213,10 +213,10 @@ export class ApiClient {
   }
 
   /**
-   * GET /api/v1/convert/quick/jobs/{jobId}
+   * GET /api/v1/conversions/{jobId}
    */
   async getJobStatus(jobId: string): Promise<JobStatusResponse> {
-    const url = `${this.getServerUrl()}/api/v1/convert/quick/jobs/${jobId}`;
+    const url = `${this.getServerUrl()}/api/v1/conversions/${jobId}`;
     const auth = await this.authHeaders();
     const res = await this.request("GET", url, auth);
 
@@ -228,11 +228,11 @@ export class ApiClient {
   }
 
   /**
-   * GET /api/v1/convert/quick/jobs/{jobId}/download/{format}
+   * GET /api/v1/conversions/{jobId}/download/{format}
    * Returns raw bytes of the converted file.
    */
   async downloadResult(jobId: string, format: string): Promise<Buffer> {
-    const url = `${this.getServerUrl()}/api/v1/convert/quick/jobs/${jobId}/download/${format}`;
+    const url = `${this.getServerUrl()}/api/v1/conversions/${jobId}/result`;
     const auth = await this.authHeaders();
     const res = await this.request("GET", url, auth);
 
@@ -246,6 +246,6 @@ export class ApiClient {
    * Returns SSE stream URL for job monitoring.
    */
   getSseUrl(jobId: string): string {
-    return `${this.getServerUrl()}/api/v1/convert/quick/jobs/${jobId}/stream`;
+    return `${this.getServerUrl()}/api/v1/conversions/${jobId}/stream`;
   }
 }
