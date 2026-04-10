@@ -2,7 +2,7 @@
   "name": "gostforge",
   "displayName": "GostForge",
   "description": "Конвертация Markdown в DOCX/PDF по ГОСТ с помощью GostForge",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "gostforge",
   "license": "MIT",
   "repository": {
