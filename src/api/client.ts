@@ -1,7 +1,5 @@
 import * as vscode from "vscode";
-import * as http from "http";
-import * as https from "https";
-import { URL } from "url";
+import fetch from "node-fetch";
 import * as T from "../localization/texts";
 import type {
   CheckHashesResponse,
@@ -40,7 +38,7 @@ export class ApiClient {
       vscode.workspace
         .getConfiguration("gostforge")
         .get<string>("serverUrl") ?? "http://localhost:8080"
-    );
+    ).replace(/\/+$/, "");
   }
 
   private async authHeaders(): Promise<Record<string, string>> {
@@ -52,45 +50,34 @@ export class ApiClient {
   }
 
   /**
-   * Low-level HTTP request using Node built-in http/https.
+   * HTTP request using node-fetch (handles redirects, chunking, and origin headers cleanly).
    * Returns { status, headers, body }.
    */
-  private request(
+  private async request(
     method: string,
     urlStr: string,
     headers: Record<string, string>,
     body?: Buffer | string
-  ): Promise<{ status: number; headers: http.IncomingHttpHeaders; body: Buffer }> {
-    return new Promise((resolve, reject) => {
-      const url = new URL(urlStr);
-      const mod = url.protocol === "https:" ? https : http;
-      const opts: http.RequestOptions = {
-        method,
-        hostname: url.hostname,
-        port: url.port,
-        path: url.pathname + url.search,
-        headers: { ...headers },
-      };
-      if (body) {
-        (opts.headers as Record<string, string>)["Content-Length"] = Buffer.byteLength(body).toString();
-      }
-      const req = mod.request(opts, (res) => {
-        const chunks: Buffer[] = [];
-        res.on("data", (c: Buffer) => chunks.push(c));
-        res.on("end", () =>
-          resolve({
-            status: res.statusCode ?? 0,
-            headers: res.headers,
-            body: Buffer.concat(chunks),
-          })
-        );
-      });
-      req.on("error", reject);
-      if (body) {
-        req.write(body);
-      }
-      req.end();
+  ): Promise<{ status: number; headers: Record<string, string | undefined>; body: Buffer }> {
+    const res = await fetch(urlStr, {
+      method,
+      headers,
+      body,
+      redirect: 'follow'
     });
+    
+    const buffer = await res.buffer();
+
+    const outHeaders: Record<string, string> = {};
+    res.headers.forEach((value, key) => {
+      outHeaders[key] = value;
+    });
+
+    return {
+      status: res.status,
+      headers: outHeaders,
+      body: buffer
+    };
   }
 
   // ── JSON helper ──
@@ -101,7 +88,7 @@ export class ApiClient {
    * throws a clear error instead of the confusing "Unexpected token '<'" message.
    */
   private parseJson<T>(
-    res: { status: number; headers: http.IncomingHttpHeaders; body: Buffer }
+    res: { status: number; headers: Record<string, string | undefined>; body: Buffer }
   ): T {
     const ct = res.headers["content-type"] ?? "";
     const text = res.body.toString();
