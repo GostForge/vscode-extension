@@ -1,9 +1,9 @@
-/** Response from POST /convert/quick/check-hashes */
+/** Response from POST /api/v1/conversions/check-hashes */
 export interface CheckHashesResponse {
   missing: string[];
 }
 
-/** Response from POST /convert/quick (job submission) */
+/** Response from POST /api/v1/conversions (job submission) */
 export interface JobStatusResponse {
   jobId: string;
   status: string;
@@ -16,7 +16,7 @@ export interface JobStatusResponse {
   warnings?: string[];
 }
 
-/** SSE event from /convert/quick/jobs/{jobId}/stream */
+/** SSE event from /api/v1/conversions/{jobId}/stream */
 export interface SseEvent {
   event: string;
   data: string;
