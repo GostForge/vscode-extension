@@ -56,7 +56,7 @@ function searchForConfigs(dir: string, roots: string[], depth: number): void {
 export async function convertQuickCommand(
   api: ApiClient,
   statusBar: StatusBarManager,
-  outputFormat: string
+  conversionChain: string
 ): Promise<{ jobId: string; status: string; warnings: string[] } | undefined> {
   // 1. Find project roots
   const roots = findProjectRoots();
@@ -107,7 +107,7 @@ export async function convertQuickCommand(
     // Validate required source type for selected conversion mode.
     const hasMd = Object.keys(manifest).some((p) => p.endsWith(".md"));
     const hasDocx = Object.keys(manifest).some((p) => p.endsWith(".docx"));
-    if (outputFormat === "MARKDOWN") {
+    if (conversionChain === "DOCX_TO_MD") {
       if (!hasDocx) {
         vscode.window.showWarningMessage(T.CONVERT_NO_DOCX);
         statusBar.setIdle();
@@ -135,7 +135,7 @@ export async function convertQuickCommand(
 
     // 6. Submit job (with STALE_CACHE retry)
     let jobResponse = await submitWithRetry(
-      api, manifest, missingFiles, fileMap, outputFormat
+      api, manifest, missingFiles, fileMap, conversionChain
     );
 
     statusBar.setBusy(T.CONVERT_QUEUED(jobResponse.status));
@@ -164,11 +164,11 @@ export async function convertQuickCommand(
       fs.mkdirSync(outDir, { recursive: true });
     }
 
-    const formats = outputFormat === "BOTH"
-      ? ["docx", "pdf"]
-      : outputFormat === "MARKDOWN"
-        ? ["zip"]
-        : [outputFormat.toLowerCase()];
+    const formats = conversionChain === "DOCX_TO_MD"
+      ? ["zip"]
+      : conversionChain === "MD_TO_DOCX_TO_PDF"
+        ? ["pdf"]
+        : ["docx"];
     for (const fmt of formats) {
       statusBar.setBusy(T.CONVERT_DOWNLOADING(fmt.toUpperCase()));
       try {
@@ -203,18 +203,18 @@ async function submitWithRetry(
   manifest: Record<string, string>,
   missingFiles: FileEntry[],
   fileMap: Map<string, Buffer>,
-  outputFormat: string,
+  conversionChain: string,
   attempt = 0
 ): ReturnType<ApiClient["submitJob"]> {
   try {
-    return await api.submitJob(manifest, missingFiles, outputFormat);
+    return await api.submitJob(manifest, missingFiles, conversionChain);
   } catch (e: any) {
     if (e.message === "STALE_CACHE" && attempt < MAX_STALE_RETRIES) {
       // Re-upload the stale files
       const stalePaths: string[] = e.missingPaths ?? [];
       const extraFiles = filterMissing(fileMap, stalePaths);
       const allFiles = [...missingFiles, ...extraFiles];
-      return submitWithRetry(api, manifest, allFiles, fileMap, outputFormat, attempt + 1);
+      return submitWithRetry(api, manifest, allFiles, fileMap, conversionChain, attempt + 1);
     }
     throw e;
   }

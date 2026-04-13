@@ -8,7 +8,7 @@ export interface JobStatusResponse {
   jobId: string;
   status: string;
   queuePosition?: number;
-  outputFormat?: string;
+  conversionChain?: string;
   errorStage?: string;
   errorMessage?: string;
   createdAt?: string;

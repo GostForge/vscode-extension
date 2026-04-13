@@ -34,22 +34,17 @@
       },
       {
         "command": "gostforge.convertDocx",
-        "title": "GostForge: Конвертировать в DOCX",
+        "title": "GostForge: Конвертировать MD → DOCX",
         "icon": "$(file-text)"
       },
       {
         "command": "gostforge.convertPdf",
-        "title": "GostForge: Конвертировать в PDF",
+        "title": "GostForge: Конвертировать MD → DOCX → PDF",
         "icon": "$(file-pdf)"
       },
       {
-        "command": "gostforge.convertBoth",
-        "title": "GostForge: Конвертировать в DOCX + PDF",
-        "icon": "$(files)"
-      },
-      {
         "command": "gostforge.convertMarkdown",
-        "title": "GostForge: Конвертировать DOCX в Markdown",
+        "title": "GostForge: Конвертировать DOCX → Markdown",
         "icon": "$(markdown)"
       },
       {
@@ -66,16 +61,15 @@
           "default": "http://localhost:8080",
           "description": "URL сервера GostForge"
         },
-        "gostforge.outputFormat": {
+        "gostforge.conversionChain": {
           "type": "string",
           "enum": [
-            "DOCX",
-            "PDF",
-            "BOTH",
-            "MARKDOWN"
+            "MD_TO_DOCX",
+            "MD_TO_DOCX_TO_PDF",
+            "DOCX_TO_MD"
           ],
-          "default": "DOCX",
-          "description": "Формат конвертации по умолчанию"
+          "default": "MD_TO_DOCX",
+          "description": "Связка конвертации по умолчанию"
         },
         "gostforge.exclude": {
           "type": "array",

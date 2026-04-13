@@ -59,12 +59,25 @@ export class ApiClient {
     headers: Record<string, string>,
     body?: Buffer | string
   ): Promise<{ status: number; headers: Record<string, string | undefined>; body: Buffer }> {
-    const res = await fetch(urlStr, {
+    let currentUrl = urlStr;
+    let res = await fetch(currentUrl, {
       method,
       headers,
       body,
-      redirect: 'follow'
+      redirect: 'manual'
     });
+
+    // Follow redirects manually to preserve body and headers
+    while (res.status >= 300 && res.status < 400 && res.headers.has('location')) {
+      const location = res.headers.get('location')!;
+      currentUrl = new URL(location, currentUrl).toString();
+      res = await fetch(currentUrl, {
+        method,
+        headers,
+        body,
+        redirect: 'manual'
+      });
+    }
     
     const buffer = await res.buffer();
 
@@ -137,7 +150,7 @@ export class ApiClient {
   async submitJob(
     manifest: Manifest,
     missingFiles: FileEntry[],
-    outputFormat: string
+    conversionChain: string
   ): Promise<JobStatusResponse> {
     const url = `${this.getServerUrl()}/api/v1/conversions`;
     const auth = await this.authHeaders();
@@ -165,11 +178,11 @@ export class ApiClient {
       JSON.stringify(manifest) + crlf
     ));
 
-    // outputFormat part
+    // conversionChain part
     parts.push(Buffer.from(
       `--${boundary}${crlf}` +
-      `Content-Disposition: form-data; name="outputFormat"${crlf}${crlf}` +
-      outputFormat + crlf
+      `Content-Disposition: form-data; name="conversionChain"${crlf}${crlf}` +
+      conversionChain + crlf
     ));
 
     // end

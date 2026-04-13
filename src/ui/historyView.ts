@@ -4,7 +4,7 @@ import * as T from "../localization/texts";
 interface HistoryEntry {
   jobId: string;
   status: string;
-  outputFormat: string;
+  conversionChain: string;
   timestamp: string;
 }
 
@@ -18,11 +18,11 @@ export class HistoryViewProvider implements vscode.TreeDataProvider<HistoryItem>
     this._onDidChangeTreeData.fire(undefined);
   }
 
-  addEntry(jobId: string, status: string, outputFormat: string): void {
+  addEntry(jobId: string, status: string, conversionChain: string): void {
     this.entries.unshift({
       jobId,
       status,
-      outputFormat,
+      conversionChain,
       timestamp: new Date().toLocaleString(),
     });
 
@@ -53,7 +53,7 @@ export class HistoryViewProvider implements vscode.TreeDataProvider<HistoryItem>
     return this.entries.map(
       (e) =>
         new HistoryItem(
-          `${statusIcon(e.status)} ${e.outputFormat} — ${e.timestamp}`,
+          `${statusIcon(e.status)} ${chainLabel(e.conversionChain)} — ${e.timestamp}`,
           e.jobId,
           e.status,
           vscode.TreeItemCollapsibleState.None
@@ -91,5 +91,18 @@ function statusIcon(status: string): string {
       return "⏳";
     default:
       return "•";
+  }
+}
+
+function chainLabel(chain: string): string {
+  switch (chain) {
+    case "MD_TO_DOCX":
+      return "MD -> DOCX";
+    case "MD_TO_DOCX_TO_PDF":
+      return "MD -> DOCX -> PDF";
+    case "DOCX_TO_MD":
+      return "DOCX -> MD";
+    default:
+      return chain;
   }
 }

@@ -46,19 +46,15 @@ export function activate(context: vscode.ExtensionContext): void {
     ),
 
     vscode.commands.registerCommand("gostforge.convertDocx", () =>
-      runConvert(api, "DOCX")
+      runConvert(api, "MD_TO_DOCX")
     ),
 
     vscode.commands.registerCommand("gostforge.convertPdf", () =>
-      runConvert(api, "PDF")
-    ),
-
-    vscode.commands.registerCommand("gostforge.convertBoth", () =>
-      runConvert(api, "BOTH")
+      runConvert(api, "MD_TO_DOCX_TO_PDF")
     ),
 
     vscode.commands.registerCommand("gostforge.convertMarkdown", () =>
-      runConvert(api, "MARKDOWN")
+      runConvert(api, "DOCX_TO_MD")
     ),
 
     vscode.commands.registerCommand("gostforge.history", () => {
@@ -70,10 +66,10 @@ export function activate(context: vscode.ExtensionContext): void {
   );
 }
 
-async function runConvert(api: ApiClient, format: string): Promise<void> {
-  const result = await convertQuickCommand(api, statusBar, format);
+async function runConvert(api: ApiClient, conversionChain: string): Promise<void> {
+  const result = await convertQuickCommand(api, statusBar, conversionChain);
   if (result) {
-    historyProvider.addEntry(result.jobId, result.status, format);
+    historyProvider.addEntry(result.jobId, result.status, conversionChain);
 
     // Display warnings in output channel and sidebar
     if (result.warnings && result.warnings.length > 0) {

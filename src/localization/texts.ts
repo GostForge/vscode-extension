@@ -19,10 +19,9 @@ export const PANEL_SECTION_WARNINGS = "Предупреждения конвер
 
 export const PANEL_BTN_SET_TOKEN = "Установить токен";
 export const PANEL_BTN_SET_URL = "Адрес сервера";
-export const PANEL_BTN_CONVERT_DOCX = "Конвертировать в DOCX";
-export const PANEL_BTN_CONVERT_PDF = "Конвертировать в PDF";
-export const PANEL_BTN_CONVERT_BOTH = "Конвертировать в DOCX + PDF";
-export const PANEL_BTN_CONVERT_MARKDOWN = "Конвертировать DOCX в Markdown";
+export const PANEL_BTN_CONVERT_DOCX = "Конвертировать MD → DOCX";
+export const PANEL_BTN_CONVERT_PDF = "Конвертировать MD → DOCX → PDF";
+export const PANEL_BTN_CONVERT_MARKDOWN = "Конвертировать DOCX → Markdown";
 
 export const PANEL_TOKEN_SAVED = "Токен сохранён";
 export const PANEL_TOKEN_NOT_SET = "Токен не установлен";
@@ -33,10 +32,9 @@ export const PANEL_SERVER_URL = "Сервер";
 
 export const CMD_SET_TOKEN_TITLE = "GostForge: Установить API токен";
 export const CMD_SET_ENDPOINT_TITLE = "GostForge: Адрес сервера";
-export const CMD_CONVERT_DOCX_TITLE = "GostForge: Конвертировать в DOCX";
-export const CMD_CONVERT_PDF_TITLE = "GostForge: Конвертировать в PDF";
-export const CMD_CONVERT_BOTH_TITLE = "GostForge: Конвертировать в DOCX + PDF";
-export const CMD_CONVERT_MARKDOWN_TITLE = "GostForge: Конвертировать DOCX в Markdown";
+export const CMD_CONVERT_DOCX_TITLE = "GostForge: Конвертировать MD → DOCX";
+export const CMD_CONVERT_PDF_TITLE = "GostForge: Конвертировать MD → DOCX → PDF";
+export const CMD_CONVERT_MARKDOWN_TITLE = "GostForge: Конвертировать DOCX → Markdown";
 export const CMD_HISTORY_TITLE = "GostForge: История конвертаций";
 
 // ── Установка токена ──
