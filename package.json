@@ -2,7 +2,7 @@
   "name": "gostforge",
   "displayName": "GostForge",
   "description": "Конвертация Markdown в DOCX/PDF по ГОСТ с помощью GostForge",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "publisher": "gostforge",
   "license": "MIT",
   "repository": {
@@ -48,6 +48,11 @@
         "icon": "$(files)"
       },
       {
+        "command": "gostforge.convertMarkdown",
+        "title": "GostForge: Конвертировать DOCX в Markdown",
+        "icon": "$(markdown)"
+      },
+      {
         "command": "gostforge.history",
         "title": "GostForge: История конвертаций",
         "icon": "$(history)"
@@ -66,7 +71,8 @@
           "enum": [
             "DOCX",
             "PDF",
-            "BOTH"
+            "BOTH",
+            "MARKDOWN"
           ],
           "default": "DOCX",
           "description": "Формат конвертации по умолчанию"

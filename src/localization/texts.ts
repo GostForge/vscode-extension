@@ -22,6 +22,7 @@ export const PANEL_BTN_SET_URL = "Адрес сервера";
 export const PANEL_BTN_CONVERT_DOCX = "Конвертировать в DOCX";
 export const PANEL_BTN_CONVERT_PDF = "Конвертировать в PDF";
 export const PANEL_BTN_CONVERT_BOTH = "Конвертировать в DOCX + PDF";
+export const PANEL_BTN_CONVERT_MARKDOWN = "Конвертировать DOCX в Markdown";
 
 export const PANEL_TOKEN_SAVED = "Токен сохранён";
 export const PANEL_TOKEN_NOT_SET = "Токен не установлен";
@@ -35,6 +36,7 @@ export const CMD_SET_ENDPOINT_TITLE = "GostForge: Адрес сервера";
 export const CMD_CONVERT_DOCX_TITLE = "GostForge: Конвертировать в DOCX";
 export const CMD_CONVERT_PDF_TITLE = "GostForge: Конвертировать в PDF";
 export const CMD_CONVERT_BOTH_TITLE = "GostForge: Конвертировать в DOCX + PDF";
+export const CMD_CONVERT_MARKDOWN_TITLE = "GostForge: Конвертировать DOCX в Markdown";
 export const CMD_HISTORY_TITLE = "GostForge: История конвертаций";
 
 // ── Установка токена ──
@@ -59,6 +61,7 @@ export const CONVERT_PICK_PROJECT = "Выберите проект для кон
 export const CONVERT_SCANNING = "Сканирование файлов...";
 export const CONVERT_NO_FILES = "В директории проекта нет файлов.";
 export const CONVERT_NO_MD = "Не найден .md файл в директории проекта.";
+export const CONVERT_NO_DOCX = "Не найден .docx файл в директории проекта.";
 export const CONVERT_CHECKING = (n: number) => `Проверка ${n} файлов...`;
 export const CONVERT_UPLOADING = (n: number) => `Загрузка ${n} файлов...`;
 export const CONVERT_ALL_CACHED = "Отправка (все файлы в кэше)...";

@@ -104,12 +104,21 @@ export async function convertQuickCommand(
       return;
     }
 
-    // Check there's at least one .md file
+    // Validate required source type for selected conversion mode.
     const hasMd = Object.keys(manifest).some((p) => p.endsWith(".md"));
-    if (!hasMd) {
-      vscode.window.showWarningMessage(T.CONVERT_NO_MD);
-      statusBar.setIdle();
-      return;
+    const hasDocx = Object.keys(manifest).some((p) => p.endsWith(".docx"));
+    if (outputFormat === "MARKDOWN") {
+      if (!hasDocx) {
+        vscode.window.showWarningMessage(T.CONVERT_NO_DOCX);
+        statusBar.setIdle();
+        return;
+      }
+    } else {
+      if (!hasMd) {
+        vscode.window.showWarningMessage(T.CONVERT_NO_MD);
+        statusBar.setIdle();
+        return;
+      }
     }
 
     statusBar.setBusy(T.CONVERT_CHECKING(fileCount));
@@ -155,12 +164,17 @@ export async function convertQuickCommand(
       fs.mkdirSync(outDir, { recursive: true });
     }
 
-    const formats = outputFormat === "BOTH" ? ["docx", "pdf"] : [outputFormat.toLowerCase()];
+    const formats = outputFormat === "BOTH"
+      ? ["docx", "pdf"]
+      : outputFormat === "MARKDOWN"
+        ? ["zip"]
+        : [outputFormat.toLowerCase()];
     for (const fmt of formats) {
       statusBar.setBusy(T.CONVERT_DOWNLOADING(fmt.toUpperCase()));
       try {
         const data = await api.downloadResult(jobResponse.jobId, fmt);
-        const outPath = path.join(outDir, `result.${fmt}`);
+        const outName = fmt === "zip" ? "result.zip" : `result.${fmt}`;
+        const outPath = path.join(outDir, outName);
         fs.writeFileSync(outPath, data);
       } catch (e: any) {
         vscode.window.showWarningMessage(T.CONVERT_DOWNLOAD_FAILED(fmt, e.message));

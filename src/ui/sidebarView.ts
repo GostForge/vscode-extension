@@ -43,6 +43,9 @@ export class SidebarViewProvider implements vscode.WebviewViewProvider {
         case "convertBoth":
           vscode.commands.executeCommand("gostforge.convertBoth");
           break;
+        case "convertMarkdown":
+          vscode.commands.executeCommand("gostforge.convertMarkdown");
+          break;
         case "showHistory":
           vscode.commands.executeCommand("gostforge.history.focus");
           break;
@@ -176,6 +179,7 @@ export class SidebarViewProvider implements vscode.WebviewViewProvider {
     <button onclick="send('convertDocx')">${T.PANEL_BTN_CONVERT_DOCX}</button>
     <button onclick="send('convertPdf')">${T.PANEL_BTN_CONVERT_PDF}</button>
     <button onclick="send('convertBoth')">${T.PANEL_BTN_CONVERT_BOTH}</button>
+    <button onclick="send('convertMarkdown')">${T.PANEL_BTN_CONVERT_MARKDOWN}</button>
   </div>
 
   ${warningsHtml}

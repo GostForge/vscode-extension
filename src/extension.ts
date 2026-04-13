@@ -57,6 +57,10 @@ export function activate(context: vscode.ExtensionContext): void {
       runConvert(api, "BOTH")
     ),
 
+    vscode.commands.registerCommand("gostforge.convertMarkdown", () =>
+      runConvert(api, "MARKDOWN")
+    ),
+
     vscode.commands.registerCommand("gostforge.history", () => {
       vscode.commands.executeCommand("gostforge.history.focus");
     }),

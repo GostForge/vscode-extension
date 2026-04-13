@@ -85,6 +85,7 @@ function statusIcon(status: string): string {
       return "❌";
     case "PENDING":
     case "MERGING_MD":
+    case "CONVERTING_MD":
     case "CONVERTING_DOCX":
     case "CONVERTING_PDF":
       return "⏳";
